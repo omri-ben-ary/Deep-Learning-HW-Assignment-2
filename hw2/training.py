@@ -301,8 +301,8 @@ class LayerTrainer(Trainer):
         #  - Calculate number of correct predictions (make sure it's an int,
         #    not a tensor) as num_correct.
         # ====== YOUR CODE: ======
-        out = model.forward(X,y)
-        model.backward(out)
+        out = self.model.forward(X)
+        self.model.backward(out)
         self.optimizer.step()
         num_correct = (y == out).sum()
         loss = self.loss_fn.forward(X,y)
@@ -315,7 +315,11 @@ class LayerTrainer(Trainer):
 
         # TODO: Evaluate the Layer model on one batch of data.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        out = model.forward(X)
+        model.backward(out)
+        self.optimizer.step()
+        num_correct = (y == out).sum()
+        loss = self.loss_fn.forward(X,y)
         # ========================
 
         return BatchResult(loss, num_correct)

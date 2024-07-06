@@ -80,7 +80,20 @@ class CNN(nn.Module):
         #  Note: If N is not divisible by P, then N mod P additional
         #  CONV->ACTs should exist at the end, without a POOL after them.
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        activation_fun = ACTIVATION[self.activation_type](**self.activation_params)
+        if self.pooling_type == 'max' :
+            pool = nn.MaxPool2d(**self.pooling_params)
+        else:
+            pool = nn.AvgPool2d(**self.pooling_params)
+        pooling_counter = 0
+        for out_channel in self.channels:
+            convolution = nn.Conv2d(in_channels, out_channel, **self.conv_params)
+            layers.append(convolution).append(activation_fun)
+            pooling_counter += 1
+            if pooling_counter == self.pool_every:
+                layers.append(pool)
+                pooling_counter = 0 
+            in_channels = out_channel
 
         # ========================
         seq = nn.Sequential(*layers)
@@ -95,7 +108,9 @@ class CNN(nn.Module):
         rng_state = torch.get_rng_state()
         try:
             # ====== YOUR CODE: ======
-            raise NotImplementedError()
+            dummy = torch.randn((1,*self.in_size)) #create a dummy input
+            features = self.features_extractor(dummy)
+            n_features = features.numel()
             # ========================
         finally:
             torch.set_rng_state(rng_state)
@@ -109,7 +124,7 @@ class CNN(nn.Module):
         #  - The last Linear layer should have an output dim of out_classes.
         mlp: MLP = None
         # ====== YOUR CODE: ======
-        raise NotImplementedError()
+        mlp = 
         # ========================
         return mlp
 
