@@ -323,11 +323,15 @@ class LayerTrainer(Trainer):
         #  - Calculate number of correct predictions (make sure it's an int,
         #    not a tensor) as num_correct.
         # ====== YOUR CODE: ======
-        out = self.model.forward(X)
-        self.model.backward(out)
+        X = X.reshape(X.shape[0], -1)
+        self.optimizer.zero_grad()
+        out = self.model(X)
+        loss = self.loss_fn(out, y)
+        dl = self.loss_fn.backward()
+        self.model.backward(dl)
         self.optimizer.step()
-        num_correct = (y == out).sum()
-        loss = self.loss_fn.forward(X,y)
+        y_pred = torch.argmax(out, 1)
+        num_correct = (y_pred == y).sum().item()
         # ========================
 
         return BatchResult(loss, num_correct)
@@ -337,11 +341,12 @@ class LayerTrainer(Trainer):
 
         # TODO: Evaluate the Layer model on one batch of data.
         # ====== YOUR CODE: ======
-        out = model.forward(X)
-        model.backward(out)
-        self.optimizer.step()
-        num_correct = (y == out).sum()
-        loss = self.loss_fn.forward(X,y)
+        X = X.reshape(X.shape[0], -1)
+        with torch.no_grad():
+            out = self.model(X)
+            loss = self.loss_fn(out, y)
+        y_pred = torch.argmax(out, 1)
+        num_correct = (y_pred == y).sum().item()
         # ========================
 
         return BatchResult(loss, num_correct)
