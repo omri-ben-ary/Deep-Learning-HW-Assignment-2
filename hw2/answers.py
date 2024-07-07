@@ -65,6 +65,7 @@ def part2_optim_hp():
     lr_momentum = 0.003
     lr_rmsprop = 0.0002
     reg = 0.005
+    #reg = 0.006 this is a test
     # ========================
     return dict(
         wstd=wstd,
