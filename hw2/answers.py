@@ -104,14 +104,7 @@ part2_q1 = r"""
 
 part2_q2 = r"""
 **Your answer:**
-
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+Yes, it is possible. This can happen because accuracy measures only the correctness of predictions. Cross-entropy loss is a meausre of uncertainty, this is not necessarily with correlation to the correctness of predictions. If the model becomes less confident in its correct predictions (meaning that uncertainty is higher), the loss can increase even if accuracy improves.
 
 """
 
