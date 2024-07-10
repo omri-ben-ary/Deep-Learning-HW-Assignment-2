@@ -110,14 +110,7 @@ Yes, it is possible. This can happen because accuracy measures only the correctn
 
 part2_q3 = r"""
 **Your answer:**
-
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+1. Gradient descent is an iterative optimization algorithm. The algorithm method is used to calculate to gradient of the function we want to minimize and to take a small step in the opposite direction as the gradient points to the local steepest ascent. Back propogation is an algorithm that helps us implement gradient descent efficiently. By applying the chain on the calculations and storing relavent results from forward pass we can efficiently calculate all the desired partial derivatives efficiently (partial derivatives compose the gradient).
 
 """
 
