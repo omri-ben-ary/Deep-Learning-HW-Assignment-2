@@ -107,7 +107,43 @@ def cnn_experiment(
     #   for you automatically.
     fit_res = None
     # ====== YOUR CODE: ======
-    raise NotImplementedError()
+    
+    # Create model, loss and optimizer instances
+    sample_image_shape = ds_train[0][0].shape
+    
+    layers_dims = []
+    for filter_itr in filters_per_layer:
+        for i in range(layers_per_block):
+            layers_dims.append(filter_itr)
+    kernel_size = 3 if not ("kernel_size" in kw) else kw["kernel_size"]
+    kernel_stride = 1 if not ("kernel_stride" in kw) else kw["kernel_stride"]
+    kernel_padding = 1 if not ("kernel_padding" in kw) else kw["kernel_padding"]
+    activation_type = "relu" if not ("activation_type" in kw) else kw["activation_type"]
+    leaky_relu_alpha = 0.01 if not ("leaky_relu_alpha" in kw) else kw["leaky_relu_alpha"]
+    pool_kernel_size = 3 if not ("pool_kernel_size" in kw) else kw["pool_kernel_size"]
+    pool_kernel_padding = 1 if not ("pool_kernel_padding" in kw) else kw["pool_kernel_padding"]
+    optimizer = "VanillaSGD" if not ("optimizer" in kw) else kw["optimizer"]
+    
+    model_params = dict(
+        in_size=sample_image_shape,
+        out_classes=10,
+        channels=layers_dims,
+        pool_every=pool_every,
+        hidden_dims=hidden_dims,
+        conv_params = dict(kernel_size=kernel_size, stride=kernel_stride, padding=kernel_padding),
+        activation_type = activation_type,
+        activation_params = dict(alpha = leaky_relu_alpha),
+        pooling_type: str = "max",
+        pooling_params = dict(kernel_size=pool_kernel_size, padding=pool_kernel_padding)
+    )
+        
+    model = CNN(**model_params)
+    loss_fn = layers.CrossEntropyLoss()
+    optimizer = opt_class(model.params(), learn_rate=hp[f'lr_{opt_name}'], reg=hp['reg'])
+
+    # Train with the Trainer
+    trainer = training.LayerTrainer(model, loss_fn, optimizer)
+    fit_res = trainer.fit(dl_train, dl_test, num_epochs, max_batches=max_batches)
     # ========================
 
     save_experiment(run_name, out_dir, cfg, fit_res)
