@@ -110,11 +110,15 @@ def cnn_experiment(
     
     # Create model, loss and optimizer instances
     sample_image_shape = ds_train[0][0].shape
-    
+    num_classes = 10
+    dl_train = DataLoader(ds_train, bs_train, shuffle=True)
+    dl_test = DataLoader(ds_test, bs_test, shuffle=False)
     layers_dims = []
+    
     for filter_itr in filters_per_layer:
         for i in range(layers_per_block):
             layers_dims.append(filter_itr)
+            
     kernel_size = 3 if not ("kernel_size" in kw) else kw["kernel_size"]
     kernel_stride = 1 if not ("kernel_stride" in kw) else kw["kernel_stride"]
     kernel_padding = 1 if not ("kernel_padding" in kw) else kw["kernel_padding"]
@@ -122,7 +126,10 @@ def cnn_experiment(
     leaky_relu_alpha = 0.01 if not ("leaky_relu_alpha" in kw) else kw["leaky_relu_alpha"]
     pool_kernel_size = 3 if not ("pool_kernel_size" in kw) else kw["pool_kernel_size"]
     pool_kernel_padding = 1 if not ("pool_kernel_padding" in kw) else kw["pool_kernel_padding"]
-    optimizer = "VanillaSGD" if not ("optimizer" in kw) else kw["optimizer"]
+    optimizer_class = torch.optim.Adam if not ("optimizer_class" in kw) else kw["optimizer_class"]
+    batchnorm = True if not ("batchnorm" in kw) else kw["batchnorm"]
+    bottleneck = True if not ("bottleneck" in kw) else kw["bottleneck"]
+    dropout = 0.1 if not ("dropout" in kw) else kw["dropout"]
     
     model_params = dict(
         in_size=sample_image_shape,
@@ -132,18 +139,25 @@ def cnn_experiment(
         hidden_dims=hidden_dims,
         conv_params = dict(kernel_size=kernel_size, stride=kernel_stride, padding=kernel_padding),
         activation_type = activation_type,
-        activation_params = dict(alpha = leaky_relu_alpha),
-        pooling_type: str = "max",
+        activation_params = dict(alpha = leaky_relu_alpha) if activation_type == "leaky_relu" else {},
+        pooling_type = "max",
         pooling_params = dict(kernel_size=pool_kernel_size, padding=pool_kernel_padding)
     )
+
+    if model_type == "resnet":
+        model_param['batchnorm'] = batchnorm
+        model_param['bottleneck'] = bottleneck
+        model_param['dropout'] = dropout
         
-    model = CNN(**model_params)
-    loss_fn = layers.CrossEntropyLoss()
-    optimizer = opt_class(model.params(), learn_rate=hp[f'lr_{opt_name}'], reg=hp['reg'])
+    model = ArgMaxClassifier(model_cls(**model_params)).to(device)
+    loss_fn = torch.nn.CrossEntropyLoss().to(device)
+
+    hp_optim = dict(lr=lr, weight_decay=reg)
+    optimizer = optimizer_class(model.parameters(), **hp_optim)
 
     # Train with the Trainer
-    trainer = training.LayerTrainer(model, loss_fn, optimizer)
-    fit_res = trainer.fit(dl_train, dl_test, num_epochs, max_batches=max_batches)
+    trainer = ClassifierTrainer(model, loss_fn, optimizer, device)
+    fit_res = trainer.fit(dl_train, dl_test, epochs, early_stopping=early_stopping)
     # ========================
 
     save_experiment(run_name, out_dir, cfg, fit_res)
