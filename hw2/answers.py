@@ -110,7 +110,15 @@ Yes, it is possible. This can happen because accuracy measures only the correctn
 
 part2_q3 = r"""
 **Your answer:**
-1. Gradient descent is an iterative optimization algorithm. The algorithm method is used to calculate to gradient of the function we want to minimize and to take a small step in the opposite direction as the gradient points to the local steepest ascent. Back propogation is an algorithm that helps us implement gradient descent efficiently. By applying the chain on the calculations and storing relavent results from forward pass we can efficiently calculate all the desired partial derivatives efficiently (partial derivatives compose the gradient).
+1. These are two different algorithms that performs different tasks to achieve a common goal. Gradient descent is an iterative optimization algorithm. The algorithm method is to calculate to gradient of the function we want to minimize and to take a small step in the opposite direction as the gradient points to the local steepest ascent. Back propogation is an algorithm that helps us implement gradient descent efficiently. By applying the chain rule on the calculations and storing relavent results from forward pass we can efficiently calculate all the desired partial derivatives efficiently (partial derivatives compose the gradient).
+
+2. Gradient descent takes into account all samples in dataset to calculate the accurate gradient while stochastic gradient descent takes into account only a fixed amount of samples. In SGD, we can take one sample at a time which will be highly inaccurate and very inconsistent. Alternatively, we can use a mini-batch of samples, this way we get a better proxy of the gradient and thus better results.
+
+3. Firstly, it is highly inefficient to calculate the gradient w.r.t the entire dataset, as GD does, SGD provides a very good tradeoff between compute runtime and accuracy. Secondly, SGD adds noise to the iterative method and so it helps us "escape" local minimas and give us a better opportunity to reach global minimas. Finaly, while SGD convergence may be empiricaly noisier it can achieve satisfactory results quicker than GD (quicker == less epochs).
+
+4. A. Yes, it is equivelent. If we denote the loss as L, in GD we compute $\nabla_{\theta} L(\theta) = \frac{1}{N} \sum_{i=1}^{N} \nabla_{\theta} L_i(\theta)$. Using the method above we simply split the sum to a few disjoint sums so when calculating the derivatives we get the same results due to linearity, therfore: $\sum_{m=1}^{M} \sum_{j=1}^{b} \nabla_{\theta} L_{m,j}(\theta) = \sum_{i=1}^{N} \nabla_{\theta} L_{i}(\theta)$
+
+B. Recall that when we implemented the layers we stored the relavent information in the forward pass to use for the backward pass. This means that we will have to do the same for the entire dataset even if it is split into batches, we will have to store information about the entire dataset which will eventually lead to an out of memory error.
 
 """
 
