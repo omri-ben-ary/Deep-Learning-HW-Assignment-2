@@ -123,15 +123,21 @@ B. Recall that when we implemented the layers we stored the relavent information
 """
 
 part2_q4 = r"""
-**Your answer:**
+1.
 
+A.
+In forward mode AD, we compute the derivative of each function $f_i $ with respect to its input while evaluating the function itself. If we were to store only the necessary derivative values at each step, we avoid the need to store all intermediate values. This results in a memory complexity of ${O}(n)$.
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+B.
+In backward mode AD, the computation proceeds by first evaluating the function from input to output, storing the necessary intermediate values, and then computing the derivatives from output to input. To reduce memory complexity, we can use a technique called checkpointing. Instead of storing all intermediate values, we store only a subset of these values at strategic points (checkpoints) during the forward pass. During the backward pass, when an intermediate value is needed but not stored, we recompute it from the nearest checkpoint. This reduces the memory complexity to ${O}(n)$, as we only store a limited number of intermediate values and recompute others as necessary, balancing memory use and computation cost.
+
+2.
+
+Yes, these techniques can be generalized for arbitrary computational graphs. In both forward and backward mode AD, we can store only the necessary derivative values at each step. Checkpointing can be used in backward mode AD to further reduce memory complexity. These methods ensure efficient memory usage for gradient computation in arbitrary computational graphs.
+
+3.
+
+When applied to deep architectures like VGGs or ResNets, these memory reduction techniques significantly benefit the backpropagation algorithm. By reducing memory complexity through forward or backward mode AD and employing checkpointing strategies, we can manage the large number of layers in deep networks more efficiently. This enables the training and inference processes to handle deep architectures with limited memory resources, thus preventing excessive memory consumption.
 
 """
 
@@ -177,56 +183,31 @@ def part3_optim_hp():
 
 
 part3_q1 = r"""
-**Your answer:**
 
+**High optimization** error occurs when the training algorithm can't find the best parameters to minimize the training loss. This might happen due to a poor choice of optimization algorithm, insufficient training time, or poorly chosen hyperparameters like learning rate and batch size. To reduce optimization error, you can use better optimization algorithms such as Adam or RMSprop, try different hyperparameters, increase training epochs, and use regularization techniques like dropout or batch normalization.
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+**High generalization** error is the difference between training error and test error, showing how well the model performs on new, unseen data. It can be caused by overfitting (model is too complex) or underfitting (model is too simple). To reduce generalization error, use regularization methods, data augmentation, cross-validation, increase training data, apply early stopping, and use ensemble methods to combine multiple models and improve performance.
 
+**High approximation** error happens when the model can't accurately represent the target function because it's too simple or lacks capacity. To reduce approximation error, use more complex models or deeper neural networks, increase the receptive field in convolutional neural networks, improve input features through feature engineering, design advanced architectures suited for the problem, and use cross-validation to ensure the model fits the data's complexity. By addressing these errors, you can improve your model's performance and reliability.
 """
 
 part3_q2 = r"""
-**Your answer:**
 
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
+In a binary classifier, the false positive rate (FPR) is higher when the cost of missing a positive instance is very high, such as in fraud detection systems for financial transactions. Here, the classifier may flag many legitimate transactions as suspicious to avoid missing actual fraudulent activities, leading to more false positives. Conversely, the false negative rate (FNR) is higher when the cost of a false positive is significant, like in software deployment for cybersecurity. In this case, the classifier might avoid flagging legitimate software updates as malicious to ensure critical updates are not blocked, resulting in a higher FNR as some threats may go undetected.
 """
 
 part3_q3 = r"""
-**Your answer:**
+1.
 
+You might still opt for a higher threshold on the ROC curve to balance the trade-off between false positives and false negatives. Since the symptoms will eventually confirm the diagnosis, it’s acceptable to have some false positives leading to unnecessary tests, as patients will ultimately receive treatment once symptoms arise. This allows for broader screening without significant harm.
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
+2.
+Here the approach changes significantly. You would likely choose a lower threshold on the ROC curve to minimize false negatives, even at the expense of increasing false positives. The priority is to ensure that as many individuals as possible with the disease are identified early, despite the higher costs and risks associated with further testing. Early detection is crucial to prevent life-threatening outcomes, making it essential to screen aggressively, even if it results in more follow-up tests for healthy individuals.
 """
 
 
 part3_q4 = r"""
-**Your answer:**
-
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
+MLP may not be the best choice for training on sequential data, such as classifying the sentiment of a sentence where each data point is a word, As MLPs treat inputs as independent features, lacking the ability to capture temporal dependencies or sequential context. In sentiment analysis, the meaning of a word often depends on its surrounding words, making it essential to understand the order and relationships between words in a sentence. MLPs do not posses the ability to model these dependencies. If the task we want to achieve is training on sequential data and classifying the sentiment of a sentence, we are better off using architectures like RNN or Transformers.
 """
 # ==============
 # Part 4 (CNN) answers
