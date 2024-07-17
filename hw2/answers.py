@@ -312,55 +312,59 @@ An equation: $e^{i\pi} -1 = 0$
 
 
 part6_q1 = r"""
-**Your answer:**
+1.
+The model detection rate was not high in those particular images. Although there were some detections, they were mostly of the wrong label. This is probrably due to overlapping objects that alter the spatiality of the image, making the model mistakenly predict object. We can also notice that even when the object were detects, which is not always the case as we can see in the second image (the cat in the middle is not detected as an object at all), the detection is for the wrong label. Another factor to show us that the model did not sucseed so well is the confidence rate, aside from onw with a confidence of 90%, all other were between 35% and 65% which is considerably low.
 
+2.
+A main reason for the model to fail is as we said due to the overlapping in the images. It alters the spatialty of the images and causes them to differ greatly from images the model has seen and has been trained on before. 
+Lets take a better look at the first image detection and infer reasons of failure from it. Firstly, dolphins are rarely out of the water, this angle of image with the sun in the back may be similar to a large amount of images it has been trained on that aren't dolphins. We can assume that the mdoel would have been able to detect the dolphins were they in the water, as this is a more common image to train on. Secondly, we see that the detections were of a human and a surfboard, which are much more common with the sky and waves and this is probrably the reason it detected the dolphins as persons and a surfboard.
+We can suggest a few things in order to better the detection rate in our opinion. We can train the model on more of these images, the more we add similar images the dataset the more it is likely to be detected correctly. Another option is to manipulate the image and "cut" it to fit less of the environment and more of just the object, making it focus more on the object itself.
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+3.
+To attack a YOLO object detection model using Projected Gradient Descent (PGD), you start with the original image and iteratively adjust it to increase the model's loss, causing it to make incorrect predictions. This involves computing the loss gradient and updating the image within a given limit. After several iterations, you evaluate the adversarial image to check if it causes the model to misdetect or misclassify, revealing the model's vulnerabilities and helping to develop robustness defenses.
 
 """
 
 
 part6_q2 = r"""
-**Your answer:**
+*Your answer:*
 
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
+Write your answer using *markdown* and $\LaTeX$:
+python
 # A code block
 a = 2
-```
+
 An equation: $e^{i\pi} -1 = 0$
 
 """
 
 
 part6_q3 = r"""
-**Your answer:**
 
+We chose to demostrate Occlusion, Model Bias and Textured Background and Blurring pit falls.
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+*Occlusion:*
+
+The picture we chose is a picture of a pack of dogs sitting next to and behind each other. We can clearly see the effects of occlusion here, the dogs in the front are detected with a good enough confidence, whilst the dogs in the back are either wrongfully detected or not detected at all. We can also see that the boundiong box of those in the front is much more precise meaning it was able to detect those dogs that weren't occluded better.
+
+*Model bias:*
+
+The picture we chose is a picture of a humanoid robot called sophia.
+The robot clearly have some not human aspects: the bald head with metal at its top and the robotic arms and chest.
+We can guss that the model detact the sophia as a person as this is a very humanoid robot so there are alot of features that are similar to human, as well as assume that another reason is that there aren't many images of robots in the dataset, at least not as much as persons that causes the bias.
+
+*Textured Background and Blurring:*
+
+The picture we chose shows the effect of blurring very well, object the were static during the capture of the image, like the traffic light, are not blurry and are very well detected. Whereas object that were moving are detected poorly or not detected at all. We can assume that the persons that were moving slightly during the capture are the ones that eventually got detected and the ones that moved a lot are those who weren't detected at all.
 
 """
 
 part6_bonus = r"""
-**Your answer:**
-
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+The image we chose to perform the enhancment on is a picture with an extermly low contrast of a person. 
+Firstly, we displayed the original image, it it very dificult even for a human eye to detect that this is a person, and the model stuglled to detect an object at all, let alone a correct detection of a human.
+Secondly, We tried to enhance the contrast of the image using tools learned in EE's course - Images Proccesing and Analysis (046200) and used an image sharpening method using histogram equalization, adding gaussian blur and finally using a sharpening kernal. We can see that this already increased the contrast massively, yet the model still hasn't detected any objects in the image.
+Finally, we used a method called Contrast Limited Adaptive Histogram Equalization (CLAHE), as well as a more aggressive sharpenning kernel in order to achieve better overall contrast.
+We can see that after performing this method we indeed got a detection, and a detection of a person as it should be.
 
 """
