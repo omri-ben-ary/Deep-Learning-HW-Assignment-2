@@ -124,7 +124,7 @@ def cnn_experiment(
     kernel_padding = 1 if not ("kernel_padding" in kw) else kw["kernel_padding"]
     activation_type = "relu" if not ("activation_type" in kw) else kw["activation_type"]
     leaky_relu_alpha = 0.01 if not ("leaky_relu_alpha" in kw) else kw["leaky_relu_alpha"]
-    pool_kernel_size = 3 if not ("pool_kernel_size" in kw) else kw["pool_kernel_size"]
+    pool_kernel_size = 2 if not ("pool_kernel_size" in kw) else kw["pool_kernel_size"]
     pool_kernel_padding = 1 if not ("pool_kernel_padding" in kw) else kw["pool_kernel_padding"]
     optimizer_class = torch.optim.Adam if not ("optimizer_class" in kw) else kw["optimizer_class"]
     batchnorm = True if not ("batchnorm" in kw) else kw["batchnorm"]
@@ -145,9 +145,9 @@ def cnn_experiment(
     )
 
     if model_type == "resnet":
-        model_param['batchnorm'] = batchnorm
-        model_param['bottleneck'] = bottleneck
-        model_param['dropout'] = dropout
+        model_params['batchnorm'] = batchnorm
+        model_params['bottleneck'] = bottleneck
+        model_params['dropout'] = dropout
         
     model = ArgMaxClassifier(model_cls(**model_params)).to(device)
     loss_fn = torch.nn.CrossEntropyLoss().to(device)
