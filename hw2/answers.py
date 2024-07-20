@@ -184,11 +184,12 @@ def part3_optim_hp():
 
 part3_q1 = r"""
 
-**High optimization** error occurs when the training algorithm can't find the best parameters to minimize the training loss. This might happen due to a poor choice of optimization algorithm, insufficient training time, or poorly chosen hyperparameters like learning rate and batch size. To reduce optimization error, you can use better optimization algorithms such as Adam or RMSprop, try different hyperparameters, increase training epochs, and use regularization techniques like dropout or batch normalization.
+**High optimization error** occurs when the training algorithm can't find the best parameters to minimize the training loss. This might happen due to a poor choice of optimization algorithm, insufficient training time, or poorly chosen hyperparameters like learning rate and batch size. To reduce optimization error, you can use better optimization algorithms such as Adam or RMSprop, try different hyperparameters, increase training epochs, and use regularization techniques like dropout or batch normalization. In terms of population loss,
+the population loss is closely related to generalization as well as training loss, when generalization is good we can say that optimization error is a good proxy to the population loss. In addition, when the model is underfitted we will experience high optimization error and high population loss due to high bias. If the model is overfitted we will see low optimization error but high population loss due to high variance. In terms of receptive field, if the receptive grows slowly it will be hard for the model to learn broad contextual features and thus optimization error will increase. Optimally we want receptive field to grow just at the right rate capturing local features as well as broad contextual features that will lead to lower optimization error.
 
-**High generalization** error is the difference between training error and test error, showing how well the model performs on new, unseen data. It can be caused by overfitting (model is too complex) or underfitting (model is too simple). To reduce generalization error, use regularization methods, data augmentation, cross-validation, increase training data, apply early stopping, and use ensemble methods to combine multiple models and improve performance.
+**High generalization error** is the difference between training error and test error, showing how well the model performs on new, unseen data. It can be caused by overfitting (model is too complex) or underfitting (model is too simple). To reduce generalization error, use regularization methods, data augmentation, cross-validation, increase training data, apply early stopping, and use ensemble methods to combine multiple models and improve performance. In terms of population loss, the generalization loss is one component of the population loss. Optimally we want low generalization loss and therefore a good generalization, the model's ability to achieve high accuracy on unseen data, is necessary to improve population loss. In terms of receptive field, we want the receptive field to grow along the layers of the network gradually so it will be able to capture local features and global features. It is important for the model to learn both as they both give relavent information for the model to  learn and preform well on it's task. A model with a receptive field growing to raipidly will miss important local features, overfit and increase the importance of global features to an undesired degree. A model with a receptive field growing vey slowly might underfit as it will not learn any global features relavent to the task. A model with the exact right receptive field design will be able to balance between global and local features in way that will generalize optimally.
 
-**High approximation** error happens when the model can't accurately represent the target function because it's too simple or lacks capacity. To reduce approximation error, use more complex models or deeper neural networks, increase the receptive field in convolutional neural networks, improve input features through feature engineering, design advanced architectures suited for the problem, and use cross-validation to ensure the model fits the data's complexity. By addressing these errors, you can improve your model's performance and reliability.
+**High approximation error** happens when the model can't accurately represent the target function because it's too simple or lacks capacity. To reduce approximation error, use more complex models or deeper neural networks, increase the receptive field in convolutional neural networks, improve input features through feature engineering, design advanced architectures suited for the problem, and use cross-validation to ensure the model fits the data's complexity. By addressing these errors, you can improve your model's performance and reliability. In terms of receptive field we would like to increase it so the model is able to learn more global features that are usally harder to find and require high receptive fields, thus increasing model class capacity. In terms of population loss, high approximation error tell us that population loss will also be high as the model class capicity is not rich enough to learn from the data.
 """
 
 part3_q2 = r"""
@@ -236,14 +237,48 @@ def part4_optim_hp():
 part4_q1 = r"""
 **Your answer:**
 
+1.
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+Bottleneck block reduces computation by projecting to a lower dimension of feature representation, convolves, and projects output back to original dimension. Therefore we get:
 
+The convolution **without bottleneck** has $64 \cdot (256 \cdot 3 \cdot 3 + 1) + 256 \cdot (64 \cdot 3 \cdot 3 + 1) = 295,232$ parameters.
+
+The convolution **with bottleneck** has $(256+1)\cdot64 + 64\cdot(3\cdot3\cdot64 + 1) + (64 + 1)\cdot256 = 70,016$ parameters.
+
+In general for each layer we have filter size (e.g 3 by 3) times depth of tensor (e.g 256) so we get $256 \cdot 3 \cdot 3$ add one parameter for bias and multiply by number of filters (e.g 64) so in total: $64 \cdot (256 \cdot 3 \cdot 3 + 1)$ or $filterNumber \cdot (height \cdot width \cdot depth + 1)$. 
+
+We can see that using bottleneck is **reducing** a lot of parameters.
+
+2.
+
+In general, each dot product in the convolution consists of $filterHeight \cdot filterWidth \cdot \cdot depth \cdot filterNumber $ floating points operations. We want to this for every pixel so we multuply this by Image width times Image height totaling to: $(filterHeight \cdot filterWidth \cdot \cdot depth \cdot filterNumber) \cdot (imageHeight \cdot imageWidth) $ floating poing operations.
+
+For the bottleneck block, the computation is $((1 \cdot 1 \cdot 256 \cdot 64) + (3 \cdot 3 \cdot 64 \cdot 64) + (1 \cdot 1 \cdot 256 \cdot 64)) \cdot (H \cdot W) = (16,384 + 36,864 + 16,384) \cdot (H \cdot W) = 69,632 \cdot (H \cdot W)$ floating poing operations.
+
+For the regular block, the computation is $((3 \cdot 3 \cdot 256 \cdot 64) + (3 \cdot 3 \cdot 64 \cdot 256)) \cdot(W \cdot H) = (147,456 + 147,456) \cdot (W \cdot H) = 294,912 \cdot (W \cdot H)$ floating poing operations.
+
+Again, it can be seen that bottleneck block **reduces** number of floating point opertions.
+
+3. 
+
+Spatial
+
+   In the regular block we have two convolution layers of 3x3 therefore the receptive field is 5x5 (assuming stride=1).
+   In the bottleneck block we have two convolution layers of 1x1 and one convolution layer of 3x3 therefore the
+   receptive field is 3x3. The spatial input combination using the bottleneck block is worse because it's receptive is smaller
+   while for the regular block the receptive big is bigger. Bigger receptive field means that each pixel in the output has information about more
+   pixels in the input image, by this sense regular block is better.
+   
+   
+Across feature map
+
+   In the bottleneck block we firstly do a dimension reduction, convolving with a 1x1 filter, which allows us to combine diffrent feature maps in
+   various ways using weighted sum. The second convolution, 3x3, is more for spatial combination and does not combine across the feature map. Lastly,
+   the 1x1 convolution at the end alows to combine again between the different features. In total, bottleneck blocks allow for a rich combintaion across feature map.
+
+   As for the regular block, in this case we only do 3x3 convolutions with no dimension reduction so this meaans that the block does not allow combination of
+   different features as the filter computes each channel separately and does not combine between different channels. In total, regular blocks don't allow
+   for combination across the feature map.
 """
 
 # ==============
@@ -313,15 +348,15 @@ An equation: $e^{i\pi} -1 = 0$
 
 part6_q1 = r"""
 1.
-The model detection rate was not high in those particular images. Although there were some detections, they were mostly of the wrong label. This is probrably due to overlapping objects that alter the spatiality of the image, making the model mistakenly predict object. We can also notice that even when the object were detects, which is not always the case as we can see in the second image (the cat in the middle is not detected as an object at all), the detection is for the wrong label. Another factor to show us that the model did not sucseed so well is the confidence rate, aside from onw with a confidence of 90%, all other were between 35% and 65% which is considerably low.
+The model detection rate was not high in those particular images. Although there were some detections, they were mostly of the wrong label. This is probrably due to overlapping objects that alter the spatiality of the image, making the model mistakenly predict object. We can also notice that even when the object were detects, which is not always the case as we can see in the second image (the cat in the middle is not detected as an object at all), the detection is for the wrong label. Another factor to show us that the model did not succeed so well is the confidence rate, aside from one with a confidence of 90% (on a mislabled dolphin), all other were between 35% and 65% which is considerably low.
 
 2.
 A main reason for the model to fail is as we said due to the overlapping in the images. It alters the spatialty of the images and causes them to differ greatly from images the model has seen and has been trained on before. 
-Lets take a better look at the first image detection and infer reasons of failure from it. Firstly, dolphins are rarely out of the water, this angle of image with the sun in the back may be similar to a large amount of images it has been trained on that aren't dolphins. We can assume that the mdoel would have been able to detect the dolphins were they in the water, as this is a more common image to train on. Secondly, we see that the detections were of a human and a surfboard, which are much more common with the sky and waves and this is probrably the reason it detected the dolphins as persons and a surfboard.
+Lets take a better look at the first image detection and infer reasons of failure from it. Firstly, dolphins are rarely out of the water, this angle of image with the sun in the back may be similar to a large amount of images it has been trained on that aren't dolphins. We can assume that the model would have been able to detect the dolphins if they were in the water, as this is a more common image to train on. Secondly, we see that the detections were of a human and a surfboard, which are much more common with the sky and waves and this is probrably the reason it detected the dolphins as persons and a surfboard.
 We can suggest a few things in order to better the detection rate in our opinion. We can train the model on more of these images, the more we add similar images the dataset the more it is likely to be detected correctly. Another option is to manipulate the image and "cut" it to fit less of the environment and more of just the object, making it focus more on the object itself.
 
 3.
-To attack a YOLO object detection model using Projected Gradient Descent (PGD), you start with the original image and iteratively adjust it to increase the model's loss, causing it to make incorrect predictions. This involves computing the loss gradient and updating the image within a given limit. After several iterations, you evaluate the adversarial image to check if it causes the model to misdetect or misclassify, revealing the model's vulnerabilities and helping to develop robustness defenses.
+To attack a YOLO object detection model using Projected Gradient Descent (PGD), you start with the original image and iteratively adjust it to increase the model's loss, causing it to make incorrect predictions. This involves computing the loss gradient and updating the image within a given limit. After several iterations, you evaluate the adversarial image to check if it causes the model to misdetect or misclassify, revealing the model's vulnerabilities and helping to develop robust defenses.
 
 """
 
@@ -346,13 +381,13 @@ We chose to demostrate Occlusion, Model Bias and Textured Background and Blurrin
 
 *Occlusion:*
 
-The picture we chose is a picture of a pack of dogs sitting next to and behind each other. We can clearly see the effects of occlusion here, the dogs in the front are detected with a good enough confidence, whilst the dogs in the back are either wrongfully detected or not detected at all. We can also see that the boundiong box of those in the front is much more precise meaning it was able to detect those dogs that weren't occluded better.
+The picture we chose is a picture of a pack of dogs sitting next to and behind each other. We can clearly see the effects of occlusion here, the dogs in the front are detected with a good enough confidence, whilst the dogs in the back are either wrongfully detected or not detected at all. We can also see that the bounding box of those in the front is much more precise meaning it was able to detect those dogs that weren't occluded better.
 
 *Model bias:*
 
 The picture we chose is a picture of a humanoid robot called sophia.
-The robot clearly have some not human aspects: the bald head with metal at its top and the robotic arms and chest.
-We can guss that the model detact the sophia as a person as this is a very humanoid robot so there are alot of features that are similar to human, as well as assume that another reason is that there aren't many images of robots in the dataset, at least not as much as persons that causes the bias.
+The robot clearly has some non human aspects: the bald head with metal at its top and the robotic arms and chest.
+We can guss that the model detects the robot as a person as this is a very humanoid robot so there are a lot of features that are similar to human.Additionaly, we assume that another reason is that there aren't many images of robots in the dataset, at least not as much as persons that causes the bias.
 
 *Textured Background and Blurring:*
 
