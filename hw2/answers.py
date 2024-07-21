@@ -290,14 +290,13 @@ Across feature map
 part5_q1 = r"""
 **Your answer:**
 
+1.
 
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
+Firstly we notice that for both K=32 and K=64 we got similar results, so our discussion is relavent to both. Secondly, it is very clear that L=16 did not learn at all, and since the next quesion discusses exactly this issue, for this discussion we will disregard the L=64 graphs. When we analyze the train accuracy it is clear that the deeper the network the better the accuracy, but not too deep as the L=16 is too deep. This makes senese because deeper networks increase model class capcity allowing for more complex data patterns to be learned by the model and more abstract high level features that improve the model's performence. As for the test accuracy results, we see that all models did quite the same with no major diffrences. This tells us, mainly for the deeper networks, that the models did not generalize well as we should expect to see better results on the deeper networks like we saw in train accuracy. To improve generalization we can use regularization methods more effectivly like dropout or weight decay. Putting all of these together, The model with L=8 produces the best results.
 
+2.
+
+In both cases (K=32 and K=64) we observe that the L=16 did not learn at all and was not trainable. This happens for multiple reasons. Firstly, in very deep networks we can come across vanishing/exploding gradients during training which effectively stops the learning. When gradients are too small, we stay in the same place in the hyperparameter space because the step size is almost zero due to gradient size. When gradients are too big, we take too big of a step which could cause us to move up along the lost function instead of downwards. Another reason that could explain why we were not able to train the network is the fact that the number of hyperparameters are much bigger in deeper networks which means that optimization process on a much bigger hyperparameter space (dimension wisw) is much harder and extremly slower. To solve these problems we can take a few measures. As for exploding gradients we can use gradient clipping which limits the gradients size. For vanishing gradients we can use different activation functions like leaky ReLU that has non zero gradients. Also, we can use residual blocks that act as shortcuts in the network that allow us to skip layers and decrease this phenomenon. As for the harder optimzation problem we can use more sophisticated optimization algorithms like Adam or RMSprop which may do better. Also allowing for a longer optimzation time might help by tuning the early stopping parameter/
 """
 
 part5_q2 = r"""
