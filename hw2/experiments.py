@@ -122,7 +122,7 @@ def cnn_experiment(
     kernel_size = 3 if not ("kernel_size" in kw) else kw["kernel_size"]
     kernel_stride = 1 if not ("kernel_stride" in kw) else kw["kernel_stride"]
     kernel_padding = 1 if not ("kernel_padding" in kw) else kw["kernel_padding"]
-    activation_type = "relu" if not ("activation_type" in kw) else kw["activation_type"]
+    activation_type = "tanh" if not ("activation_type" in kw) else kw["activation_type"]
     leaky_relu_alpha = 0.01 if not ("leaky_relu_alpha" in kw) else kw["leaky_relu_alpha"]
     pool_kernel_size = 2 if not ("pool_kernel_size" in kw) else kw["pool_kernel_size"]
     pool_kernel_padding = 1 if not ("pool_kernel_padding" in kw) else kw["pool_kernel_padding"]
