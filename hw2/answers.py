@@ -301,28 +301,14 @@ In both cases (K=32 and K=64) we observe that the L=16 did not learn at all and 
 
 part5_q2 = r"""
 **Your answer:**
-
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
+????????????????????????
+We notice that K has no large effects on the results. We notice 
 """
 
 part5_q3 = r"""
 **Your answer:**
 
-
-Write your answer using **markdown** and $\LaTeX$:
-```python
-# A code block
-a = 2
-```
-An equation: $e^{i\pi} -1 = 0$
-
+All models got high accuracy both in test and train. Having said that, it is apparent that all models overfitted a bit as the train loss monotonously decreases while the test loss starts to increase at a certain point. This makes sense because these networks are not so deep so it is easy to overfit. In addition, the model class capicity is much smaller and so approximation error could be high making generalization worse, this explains the diffrent trends between train loss and test loss towards the end.
 """
 
 part5_q4 = r"""
