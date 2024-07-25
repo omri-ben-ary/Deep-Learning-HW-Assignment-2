@@ -335,9 +335,13 @@ class ResNet(CNN):
         for i in range(0, N, self.pool_every):
             inner_channels = channels_size[i: i + self.pool_every]
             kernel_size = [3] * len(inner_channels)
-
+            
             if self.bottleneck and in_channel_iter == inner_channels[-1]:
-                layers.append(ResidualBottleneckBlock(in_out_channels=in_channel_iter, inner_channels=inner_channels[1:-1],                                   inner_kernel_sizes=kernel_size[1:-1], batchnorm=self.batchnorm, 
+                if len(inner_channels) < 3:
+                    inner_channels += [inner_channels[-1]] * (3-len(inner_channels))
+                    kernel_size += [3] * (3-len(kernel_size))
+                layers.append(ResidualBottleneckBlock(in_out_channels=in_channel_iter, inner_channels=inner_channels[1:-1],
+                                                      inner_kernel_sizes=kernel_size[1:-1], batchnorm=self.batchnorm, 
                                                       dropout=self.dropout, activation_type=self.activation_type, 
                                                       activation_params=self.activation_params))
             else:

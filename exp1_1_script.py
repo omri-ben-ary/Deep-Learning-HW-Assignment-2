@@ -115,7 +115,7 @@ import subprocess
 
 #exp1_4_1
 # Define the range of values for the parameters
-L_values = [8,16,32]
+L_values = [8, 16, 32]
 K_values = [32]
 # P_values = [2, 3]
 # H_values = [100, 200]
